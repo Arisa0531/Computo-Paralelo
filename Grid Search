@@ -1,1 +1,32 @@
+from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
 
+# Cargar un dataset de ejemplo (el dataset Iris en este caso)
+data = load_iris()
+X = data.data  # Características (entradas)
+y = data.target  # Etiquetas (salidas)
+
+# Dividir los datos en conjuntos de entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Definir el modelo
+model = SVC()
+
+# Definir los hiperparámetros y sus valores
+param_grid = {
+    'C': [1, 10, 100],
+    'gamma': [0.001, 0.0001],
+    'kernel': ['rbf']
+}
+
+# Crear el objeto GridSearchCV
+grid = GridSearchCV(model, param_grid, cv=5, scoring='accuracy')
+
+# Ajustar el modelo a los datos de entrenamiento
+grid.fit(X_train, y_train)
+
+# Imprimir los mejores parámetros y la mejor puntuación
+print("Mejores parámetros:", grid.best_params_)
+print("Mejor puntuación:", grid.best_score_)
