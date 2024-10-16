@@ -23,10 +23,3 @@ param_grid = {
 
 # Crear el objeto GridSearchCV
 grid = GridSearchCV(model, param_grid, cv=5, scoring='accuracy')
-
-# Ajustar el modelo a los datos de entrenamiento
-grid.fit(X_train, y_train)
-
-# Imprimir los mejores parámetros y la mejor puntuación
-print("Mejores parámetros:", grid.best_params_)
-print("Mejor puntuación:", grid.best_score_)
