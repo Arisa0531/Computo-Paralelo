@@ -28,12 +28,6 @@ param_grid_rf = {
 keys_rf, values_rf = zip(*param_grid_rf.items())
 combinations_rf = [dict(zip(keys_rf, v)) for v in itertools.product(*values_rf)]
 
-# Nueva función para nivelar las cargas
-def nivelacion_cargas_mejorada(D, n_p):
-    # Determinar el tamaño de cada segmento
-    k, m = divmod(len(D), n_p)
-    return [D[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n_p)]
-
 # Validación cruzada
 def evaluate_set(hyperparameter_set, X_train, y_train, results, idx):
     best_accuracy = 0
