@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import StandardScaler
 
-# 1. Cargar y preprocesar la base de datos
+# cargar base de datos
 file_path = r'C:\Users\Ariadna\Downloads\winequality-white-clean.csv'
 df = pd.read_csv(file_path)
 
@@ -19,7 +19,7 @@ y = df['quality']
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Dividir los datos en conjunto de entrenamiento y prueba (80% entrenamiento, 20% prueba)
+# (80% entrenamiento, 20% prueba)
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.20, random_state=42)
 
 # 2. Definir los hiperparámetros para SVC
@@ -33,21 +33,14 @@ param_grid_svc = {
 keys_svc, values_svc = zip(*param_grid_svc.items())
 combinations_svc = [dict(zip(keys_svc, v)) for v in itertools.product(*values_svc)]
 
-# 3. Nueva función para nivelar las cargas
+# Nivelar las cargas
 def nivelacion_cargas_mejorada(D, n_p):
-    """
-    Esta función divide la lista D en n_p partes de manera equilibrada.
-    """
     # Determinar el tamaño de cada segmento
     k, m = divmod(len(D), n_p)
     return [D[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n_p)]
 
-# 4. Función para evaluar cada conjunto de hiperparámetros en paralelo usando validación cruzada
+# Validación cruzada
 def evaluate_set(hyperparameter_set, X_train, y_train, results, idx):
-    """
-    Función que evalúa un conjunto de hiperparámetros utilizando SVC
-    con validación cruzada en los datos de entrenamiento.
-    """
     best_accuracy = 0
     best_params = None
 
@@ -69,7 +62,7 @@ def evaluate_set(hyperparameter_set, X_train, y_train, results, idx):
     results[idx] = (best_accuracy, best_params)
 
 if __name__ == '__main__':
-    # Número de hilos a usar (4 núcleos lógicos)
+    # Número de hilos
     N_THREADS = 2
     # Dividir las combinaciones de hiperparámetros en partes para cada hilo usando la nueva función
     splits = nivelacion_cargas_mejorada(combinations_svc, N_THREADS)
@@ -78,7 +71,7 @@ if __name__ == '__main__':
     results = [None] * N_THREADS
     threads = []
 
-    # 5. Iniciar el temporizador
+    #  temporizador
     start_time = time.perf_counter()
 
     # Crear y comenzar los hilos manualmente
@@ -91,13 +84,12 @@ if __name__ == '__main__':
     for thread in threads:
         thread.join()
 
-    # 6. Obtener el mejor resultado
+    #  mejor resultado
     best_accuracy = max(results, key=lambda x: x[0])[0]
     best_params = max(results, key=lambda x: x[0])[1]
 
     finish_time = time.perf_counter()
     
-    # 7. Imprimir los resultados
     print(f"Mejor Precisión (cross-validation): {best_accuracy:.4f} con Hiperparámetros: {best_params}")
     print(f"Grid Search paralelizado completado en {finish_time - start_time:.2f} segundos")
 
