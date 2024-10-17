@@ -99,3 +99,4 @@ if __name__ == '__main__':
     y_pred = final_clf.predict(X_test)
     test_accuracy = accuracy_score(y_test, y_pred)
     print(f"Precisión en el conjunto de prueba: {test_accuracy:.4f}")
+    hola
